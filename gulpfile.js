@@ -1,8 +1,8 @@
 var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
-  plumber = require('gulp-plumber'),
   livereload = require('gulp-livereload'),
-  sass = require('gulp-ruby-sass');
+  sass = require('gulp-ruby-sass'),
+  mocha = require('gulp-mocha');
 
 gulp.task('sass', function () {
   return sass('./public/css/')
@@ -18,7 +18,7 @@ gulp.task('develop', function () {
   livereload.listen();
   nodemon({
     script: 'bin/www',
-    ext: 'js jade coffee',
+    ext: 'js jade coffee'
   }).on('restart', function () {
     setTimeout(function () {
       livereload.changed(__dirname);
@@ -26,8 +26,17 @@ gulp.task('develop', function () {
   });
 });
 
+gulp.task("test", function() {
+  return gulp.src('app', {
+    read: false
+  }).pipe(
+    mocha({reporter: 'nyan'})
+  );
+});
+
 gulp.task('default', [
   'sass',
+  'test',
   'develop',
   'watch'
 ]);
